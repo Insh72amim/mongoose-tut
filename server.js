@@ -1,27 +1,29 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const Router = require("./routes");
 const app = express();
-
 app.use(express.json());
 
-mongoose.connect('mongodb+srv://amim:Amim123@cluster0.qam3hyp.mongodb.net/?retryWrites=true&w=majority',
+require("dotenv").config({ path: "./config.env" });
+const mongoose = require("mongoose");
+const MONGO_URI =  process.env.ATLAS_URI;
+const PORT = process.env.PORT;
+
+mongoose.connect(MONGO_URI,
 {
     useNewUrlParser : true,
-    //useFindAndModify : false,
     useUnifiedTopology : true
 }
 );
-
 const db = mongoose.connection;
-
-db.on("error",console.error.bind(console,"connection error : "));
+db.on("error", console.error.bind(console,"connection error : "));
 db.once("open", function(){
     console.log("connection successfuly");
 });
 
+
+const Router = require("./routes");
 app.use(Router);
 
-app.listen(3000, ()=>{
-    console.log("server is running on port 3000");
+
+app.listen(PORT, ()=>{
+    console.log(`server is running on port ${PORT}`);
 });
